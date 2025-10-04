@@ -17,6 +17,7 @@ public class ShipmentKafkaProducer {
     @Autowired
     private KafkaTemplate<String, Map<String, Object>> kafkaTemplate;
     private final String SHIPMENT_CREATED_TOPIC = "shipment-created-event";
+    private final String SHIPMENT_STATUS_CHANGE = "shipment-status-change";
 
     public void publishShipmentCreatedEvent(Shipment shipment){
         Map<String, Object> event = new HashMap<>();
@@ -28,6 +29,18 @@ public class ShipmentKafkaProducer {
 
         kafkaTemplate.send(SHIPMENT_CREATED_TOPIC, event);
         log.info("Shipment creation event published!");
+    }
+
+    public void publishShipmentStatusChangeEvent(Shipment shipment) {
+        Map<String, Object> event = new HashMap<>();
+        event.put("shipmentId", shipment.getShipmentId());
+        event.put("orderId", shipment.getOrderId());
+        event.put("status", shipment.getStatus());
+        event.put("eventSource", "SHIPMENT");
+        event.put("description", "Shipment status updated to: " + shipment.getStatus());
+
+        kafkaTemplate.send(SHIPMENT_STATUS_CHANGE, event);
+        log.info("Shipment status change event published for shipmentId: {}", shipment.getShipmentId());
     }
 
 }

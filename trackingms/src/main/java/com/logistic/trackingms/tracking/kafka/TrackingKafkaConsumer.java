@@ -23,7 +23,7 @@ public class TrackingKafkaConsumer {
     private TrackingService trackingService;
 
     @KafkaListener(topics = {"order-creation-events", "order-status-events", "inventory-events",
-    "shipment-created-event"},
+    "shipment-created-event", "shipment-status-change","courier-shipment-status-topic","courier-assigned-topic"},
             groupId = "tracking-group")
     public void handleConsumeEvent(Map<String, Object> eventPayload){
         // Extract common fields

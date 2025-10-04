@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -50,9 +51,33 @@ public class ShipmentServiceImpl implements ShipmentService{
     }
 
     @Override
-    public Shipment updateShipmentStatus(String trackingId, ShipmentStatus status) {
-        return null;
+    public Shipment updateShipmentStatus(String shipmentId, ShipmentStatus status) {
+        // Find shipment by ID
+        Optional<Shipment> optionalShipment = shipmentRepository.findById(shipmentId);
+
+        if (optionalShipment.isEmpty()) {
+            // Shipment not found
+            return null;
+        }
+
+        Shipment shipment = optionalShipment.get();
+
+        // Update status
+        shipment.setStatus(status);
+        /*if(status.equals("COURIER_ASSIGNED")){
+            shipment.setCourier();
+            shipment.setTrackingId();
+        }*/
+        shipment.setDeliveredAt(LocalDateTime.now());
+
+        // Save updated shipment
+        Shipment updatedShipment = shipmentRepository.save(shipment);
+
+        // Publish status changed event
+        shipmentKafkaProducer.publishShipmentStatusChangeEvent(updatedShipment);
+        return updatedShipment;
     }
+
 
     @Override
     public Shipment getShipmentByOrderId(String orderId) {

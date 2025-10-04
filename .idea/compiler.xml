@@ -20,7 +20,6 @@
         <module name="orderms" />
         <module name="inventoryms" />
         <module name="notificationms" />
-        <module name="transportms" />
       </profile>
       <profile name="Annotation profile for trackingms" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
@@ -39,6 +38,15 @@
           <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/unknown/lombok-unknown.jar" />
         </processorPath>
         <module name="shippingms" />
+      </profile>
+      <profile name="Annotation profile for transportms" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath>
+          <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/unknown/lombok-unknown.jar" />
+        </processorPath>
+        <module name="transportms" />
       </profile>
     </annotationProcessing>
   </component>

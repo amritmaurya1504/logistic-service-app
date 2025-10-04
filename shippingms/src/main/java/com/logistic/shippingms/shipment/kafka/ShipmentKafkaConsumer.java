@@ -1,6 +1,7 @@
 package com.logistic.shippingms.shipment.kafka;
 
 import com.logistic.shippingms.shipment.entity.Shipment;
+import com.logistic.shippingms.shipment.entity.enums.ShipmentStatus;
 import com.logistic.shippingms.shipment.service.ShipmentService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,5 +33,16 @@ public class ShipmentKafkaConsumer {
             );
         }
     }
+
+    @KafkaListener(topics = {"courier-assigned-topic", "courier-shipment-status-topic"}, groupId = "shipment-group")
+    public void handleConsumeCourierAssignedEvent(Map<String, Object> event){
+        String shipmentId = (String) event.get("shipmentId");
+        String status = (String) event.get("status");
+
+        shipmentService.updateShipmentStatus(shipmentId, ShipmentStatus.valueOf(status));
+
+    }
+
+
 
 }
